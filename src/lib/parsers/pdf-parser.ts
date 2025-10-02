@@ -1,3 +1,14 @@
+export interface ParsedPDF {
+  text: string;
+  numPages: number;
+  metadata?: {
+    title?: string;
+    author?: string;
+    subject?: string;
+    creator?: string;
+  };
+}
+
 import { cleanText } from "@/lib/utils/text-processing";
 
 export interface ParsedPDF {
@@ -16,9 +27,10 @@ export async function parsePDF(file: File): Promise<ParsedPDF> {
     // Convert File to ArrayBuffer
     const arrayBuffer = await file.arrayBuffer();
 
-    // Use pdf-parse package (we'll make it work server-side only)
-    // Dynamic import to avoid issues
-    const pdfParse = (await import("pdf-parse/lib/pdf-parse.js")).default;
+    // Import pdf-parse - it's a CommonJS module
+    const pdfParse = await import("pdf-parse").then(
+      (mod) => mod.default || mod
+    );
 
     const data = await pdfParse(Buffer.from(arrayBuffer));
 
