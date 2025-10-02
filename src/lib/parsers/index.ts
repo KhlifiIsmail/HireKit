@@ -1,143 +1,74 @@
-import {
-  parsePDF,
-  validatePDFFile,
-  getPDFQualityScore,
-  ParsedPDF,
-} from "./pdf-parser";
-import {
-  parseDOCX,
-  validateDOCXFile,
-  getDOCXQualityScore,
-  ParsedDOCX,
-} from "./docx-parser";
-import { formatFileSize } from "@/lib/utils/text-processing";
+import { parsePDF, validatePDF, ParsedPDF } from "./pdf-parser";
+import { parseDOCX, ParsedDOCX } from "./docx-parser";
 
 export interface ParsedFile {
   text: string;
-  fileType: "pdf" | "docx";
-  originalFilename: string;
-  fileSize: number;
-  quality: {
-    score: number;
-    issues: string[];
-    recommendations: string[];
-  };
-  metadata?: any;
-}
-
-export interface FileValidationResult {
-  isValid: boolean;
-  error?: string;
-  fileType?: "pdf" | "docx";
-}
-
-/**
- * Validate uploaded file type and size
- */
-export function validateFile(file: File): FileValidationResult {
-  // Check if file exists
-  if (!file) {
-    return { isValid: false, error: "No file provided" };
-  }
-
-  // Determine file type
-  let fileType: "pdf" | "docx" | undefined;
-
-  if (
-    file.type === "application/pdf" ||
-    file.name.toLowerCase().endsWith(".pdf")
-  ) {
-    fileType = "pdf";
-    return { ...validatePDFFile(file), fileType };
-  }
-
-  if (
-    file.type ===
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-    file.type === "application/msword" ||
-    file.name.toLowerCase().endsWith(".docx") ||
-    file.name.toLowerCase().endsWith(".doc")
-  ) {
-    fileType = "docx";
-    return { ...validateDOCXFile(file), fileType };
-  }
-
-  return {
-    isValid: false,
-    error:
-      "Unsupported file type. Please upload a PDF or Word document (.pdf, .docx, .doc)",
+  metadata?: {
+    title?: string;
+    author?: string;
+    pageCount?: number;
   };
 }
 
 /**
- * Parse any supported file type
+ * Universal file parser - handles PDF and DOCX files
  */
 export async function parseFile(file: File): Promise<ParsedFile> {
-  // Validate file first
-  const validation = validateFile(file);
-  if (!validation.isValid) {
-    throw new Error(validation.error);
-  }
+  const fileType = getFileType(file);
 
-  const fileType = validation.fileType!;
-  const buffer = Buffer.from(await file.arrayBuffer());
-
-  try {
-    let parsedData: any;
-    let quality: { score: number; issues: string[]; recommendations: string[] };
-
-    if (fileType === "pdf") {
-      parsedData = await parsePDF(buffer);
-      quality = getPDFQualityScore(parsedData);
-    } else {
-      parsedData = await parseDOCX(buffer);
-      quality = getDOCXQualityScore(parsedData);
+  if (fileType === "pdf") {
+    const validation = validatePDF(file);
+    if (!validation.isValid) {
+      throw new Error(validation.error || "Invalid PDF file");
     }
 
+    const result = await parsePDF(file);
     return {
-      text: parsedData.text,
-      fileType,
-      originalFilename: file.name,
-      fileSize: file.size,
-      quality,
+      text: result.text,
       metadata: {
-        ...parsedData,
-        fileSizeFormatted: formatFileSize(file.size),
-        uploadedAt: new Date().toISOString(),
+        ...result.metadata,
+        pageCount: result.numPages,
       },
     };
-  } catch (error) {
-    console.error(`Error parsing ${fileType.toUpperCase()}:`, error);
-    throw new Error(
-      `Failed to parse ${fileType.toUpperCase()} file: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
-    );
   }
+
+  if (fileType === "docx") {
+    const result = await parseDOCX(file);
+    return {
+      text: result.text,
+      metadata: result.metadata,
+    };
+  }
+
+  throw new Error(`Unsupported file type: ${file.type}`);
 }
 
 /**
- * Get supported file types for file input
+ * Validate any supported file
  */
-export function getSupportedFileTypes(): {
-  accept: string;
-  description: string;
-  extensions: string[];
+export function validateFile(file: File): {
+  isValid: boolean;
+  error?: string;
 } {
-  return {
-    accept:
-      ".pdf,.doc,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword",
-    description: "PDF or Word documents",
-    extensions: [".pdf", ".doc", ".docx"],
-  };
-}
+  // Check file size (5MB max)
+  const maxSize = 5 * 1024 * 1024;
+  if (file.size > maxSize) {
+    return {
+      isValid: false,
+      error: "File size exceeds 5MB limit",
+    };
+  }
 
-/**
- * Check if file type is supported
- */
-export function isSupportedFileType(file: File): boolean {
-  const validation = validateFile(file);
-  return validation.isValid;
+  // Check file type
+  const fileType = getFileType(file);
+  if (fileType === "unknown") {
+    return {
+      isValid: false,
+      error: "Unsupported file type. Please upload PDF or DOCX files.",
+    };
+  }
+
+  return { isValid: true };
 }
 
 /**
@@ -165,7 +96,42 @@ export function getFileType(file: File): "pdf" | "docx" | "unknown" {
 }
 
 /**
- * Extract basic info from file without full parsing
+ * Format file size to human-readable string
+ */
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+}
+
+/**
+ * Get supported file types for file input
+ */
+export function getSupportedFileTypes(): {
+  accept: string;
+  description: string;
+  extensions: string[];
+} {
+  return {
+    accept:
+      ".pdf,.doc,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword",
+    description: "PDF or Word documents",
+    extensions: [".pdf", ".doc", ".docx"],
+  };
+}
+
+/**
+ * Check if file type is supported
+ */
+export function isSupportedFileType(file: File): boolean {
+  const validation = validateFile(file);
+  return validation.isValid;
+}
+
+/**
+ * Get basic file info without parsing
  */
 export function getFileInfo(file: File): {
   name: string;
@@ -183,6 +149,5 @@ export function getFileInfo(file: File): {
   };
 }
 
-// Re-export specific parsers if needed
-export { parsePDF, parseDOCX };
+// Re-export types
 export type { ParsedPDF, ParsedDOCX };

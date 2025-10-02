@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parseFile, validateFile } from "@/lib/parsers/";
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+import { parseFile } from "@/lib/parsers";
 
 export async function POST(request: NextRequest) {
   try {
-    // Parse form data
     const formData = await request.formData();
     const file = formData.get("file") as File;
 
@@ -13,50 +10,54 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Validate file size
-    if (file.size > MAX_FILE_SIZE) {
+    // Validate file size (5MB max)
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
       return NextResponse.json(
-        { error: "File size too large. Maximum size is 5MB." },
+        { error: "File size exceeds 5MB limit" },
         { status: 400 }
       );
     }
 
     // Validate file type
-    const validation = validateFile(file);
-    if (!validation.isValid) {
-      return NextResponse.json({ error: validation.error }, { status: 400 });
+    const validTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/msword",
+    ];
+
+    if (!validTypes.includes(file.type)) {
+      return NextResponse.json(
+        { error: "Invalid file type. Only PDF and DOCX are supported." },
+        { status: 400 }
+      );
     }
 
-    // Parse the file
-    const parsedFile = await parseFile(file);
+    // Parse the file (server-side)
+    const result = await parseFile(file);
 
-    // Check if extracted text is meaningful
-    if (parsedFile.text.length < 50) {
+    if (!result.text || result.text.length < 100) {
       return NextResponse.json(
         {
           error:
-            "Unable to extract meaningful text from the file. Please ensure your resume contains readable text.",
+            "Could not extract enough text from the file. Please ensure your resume contains readable text.",
         },
         { status: 400 }
       );
     }
 
-    // Return parsed data
     return NextResponse.json({
       success: true,
       data: {
-        text: parsedFile.text,
-        filename: parsedFile.originalFilename,
-        fileType: parsedFile.fileType,
-        fileSize: parsedFile.fileSize,
-        quality: parsedFile.quality,
-        wordCount: parsedFile.text.split(/\s+/).length,
-        characterCount: parsedFile.text.length,
+        text: result.text,
+        filename: file.name,
+        size: file.size,
+        type: file.type,
+        metadata: result.metadata,
       },
     });
   } catch (error) {
-    console.error("File upload error:", error);
-
+    console.error("Upload error:", error);
     return NextResponse.json(
       {
         error:
@@ -65,21 +66,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-// Handle GET requests (not allowed)
-export async function GET() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
-}
-
-// Add CORS headers if needed
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
 }
