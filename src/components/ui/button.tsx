@@ -30,61 +30,39 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     return (
       <button
+        ref={ref}
+        disabled={disabled || loading}
         className={cn(
-          // Base styles
           "inline-flex items-center justify-center whitespace-nowrap rounded-xl font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-
-          // Variants
           {
-            // Default - Premium blue gradient
             "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98]":
               variant === "default",
-
-            // Gradient - Purple to pink
             "bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-[1.02] active:scale-[0.98]":
               variant === "gradient",
-
-            // Destructive - Red
             "bg-red-600 text-white shadow-lg shadow-red-500/25 hover:bg-red-700 hover:shadow-xl hover:shadow-red-500/40":
               variant === "destructive",
-
-            // Outline - Glass effect
             "border border-gray-200 bg-white/80 backdrop-blur-sm text-gray-900 shadow-sm hover:bg-gray-50/90 hover:shadow-md dark:border-gray-800 dark:bg-gray-950/80 dark:text-gray-50 dark:hover:bg-gray-800/90":
               variant === "outline",
-
-            // Secondary - Subtle gray
             "bg-gray-100 text-gray-900 shadow-sm hover:bg-gray-200 hover:shadow-md dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700":
               variant === "secondary",
-
-            // Ghost - Minimal
             "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-50":
               variant === "ghost",
-
-            // Link - No background
             "text-blue-600 underline-offset-4 hover:underline dark:text-blue-400":
               variant === "link",
           },
-
-          // Sizes
           {
             "h-10 px-6 py-2 text-sm": size === "default",
-            "h-8 px-4 py-1 text-xs": size === "sm",
-            "h-12 px-8 py-3 text-base": size === "lg",
-            "h-10 w-10 p-0": size === "icon",
+            "h-9 px-4 text-sm": size === "sm",
+            "h-11 px-8 text-base": size === "lg",
+            "h-10 w-10": size === "icon",
           },
-
-          // Loading state
-          loading && "cursor-not-allowed opacity-70",
-
           className
         )}
-        disabled={disabled || loading}
-        ref={ref}
         {...props}
       >
         {loading && (
           <svg
-            className="mr-2 h-4 w-4 animate-spin"
+            className="animate-spin -ml-1 mr-2 h-4 w-4"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -100,7 +78,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             <path
               className="opacity-75"
               fill="currentColor"
-              d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             />
           </svg>
         )}
@@ -109,6 +87,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
+
 Button.displayName = "Button";
 
 export { Button };

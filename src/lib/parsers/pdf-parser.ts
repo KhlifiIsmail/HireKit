@@ -1,14 +1,3 @@
-export interface ParsedPDF {
-  text: string;
-  numPages: number;
-  metadata?: {
-    title?: string;
-    author?: string;
-    subject?: string;
-    creator?: string;
-  };
-}
-
 import { cleanText } from "@/lib/utils/text-processing";
 
 export interface ParsedPDF {
@@ -24,17 +13,13 @@ export interface ParsedPDF {
 
 export async function parsePDF(file: File): Promise<ParsedPDF> {
   try {
-    // Convert File to ArrayBuffer
     const arrayBuffer = await file.arrayBuffer();
-
-    // Import pdf-parse - it's a CommonJS module
-    const pdfParse = await import("pdf-parse").then(
-      (mod) => mod.default || mod
-    );
-
-    const data = await pdfParse(Buffer.from(arrayBuffer));
-
-    // Clean the extracted text
+    const buffer = Buffer.from(arrayBuffer);
+    
+    // Server-side only - use dynamic require
+    const parse = eval('require')('pdf-parse');
+    
+    const data = await parse(buffer);
     const cleanedText = cleanText(data.text);
 
     return {
@@ -57,7 +42,6 @@ export async function parsePDF(file: File): Promise<ParsedPDF> {
   }
 }
 
-// Validate PDF file
 export function validatePDF(file: File): { isValid: boolean; error?: string } {
   if (
     file.type !== "application/pdf" &&
@@ -69,7 +53,6 @@ export function validatePDF(file: File): { isValid: boolean; error?: string } {
     };
   }
 
-  // 5MB limit
   const maxSize = 5 * 1024 * 1024;
   if (file.size > maxSize) {
     return {

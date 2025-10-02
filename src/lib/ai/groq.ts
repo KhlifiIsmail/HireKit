@@ -7,5 +7,5 @@ const groq = new Groq({
 
 export default groq;
 
-// Export model name for consistency
-export const DEFAULT_MODEL = "llama-3.1-70b-versatile";
+// Use the current model - llama-3.1-70b-versatile is deprecated
+export const DEFAULT_MODEL = "llama-3.3-70b-versatile";
