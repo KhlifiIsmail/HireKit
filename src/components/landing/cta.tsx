@@ -61,9 +61,9 @@ export function CTA() {
                 className="bg-white text-blue-900 hover:bg-gray-100 font-semibold px-8 py-4 h-auto text-lg shadow-xl"
                 asChild
               >
-                <Link href="/analyze">
+                <Link href="/analyze" className="flex">
                   Start Free Analysis
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-5 w-5 mt-1" />
                 </Link>
               </Button>
 

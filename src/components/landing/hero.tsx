@@ -62,15 +62,15 @@ export function Hero() {
             <Button
               size="lg"
               variant="gradient"
-              className="text-lg px-8 py-4 h-auto"
+              className="text-lg px-8 py-4 h-auto  "
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               asChild
             >
-              <Link href="/analyze">
+              <Link href="/analyze" className="flex ">
                 Start Free Analysis
                 <ArrowRight
-                  className={`ml-2 h-5 w-5 transition-transform duration-200 ${
+                  className={`ml-2 h-5 w-5 transition-transform duration-200 mt-1 ${
                     isHovered ? "translate-x-1" : ""
                   }`}
                 />

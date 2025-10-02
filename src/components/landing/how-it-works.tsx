@@ -144,9 +144,9 @@ export function HowItWorks() {
               className="bg-white text-blue-600 hover:bg-gray-50 font-semibold px-8 py-4 h-auto text-lg"
               asChild
             >
-              <Link href="/analyze">
+              <Link href="/analyze" className="flex">
                 Start Your Free Analysis
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-5 w-5 mt-1" />
               </Link>
             </Button>
           </div>
