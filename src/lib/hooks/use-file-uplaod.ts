@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { validateFile, getFileInfo } from "@/lib/parsers";
+import { validateFile, getFileInfo } from "@/lib/parsers/";
 
 export interface UploadedFileData {
   text: string;

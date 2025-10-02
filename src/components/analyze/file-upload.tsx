@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useFileUpload } from "@/lib/hooks/use-file-uplaod";
-import { getSupportedFileTypes } from "@/lib/parsers";
+import { getSupportedFileTypes } from "@/lib/parsers/";
 import { cn } from "@/lib/utils/cn";
 
 interface FileUploadProps {

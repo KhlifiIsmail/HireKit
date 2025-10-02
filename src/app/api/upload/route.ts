@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parseFile, validateFile } from "@/lib/parsers";
+import { parseFile, validateFile } from "@/lib/parsers/";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
