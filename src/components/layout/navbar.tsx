@@ -82,19 +82,19 @@ export function Navbar() {
   const navItems = [
     { href: "/#features", label: "Features" },
     { href: "/#how-it-works", label: "How it Works" },
-    { href: "/#pricing", label: "Pricing" },
+    { href: "/pricing", label: "Pricing" },
   ];
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50 dark:bg-gray-950/80 dark:border-gray-800/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-[4rem]">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
             <Image
               src={logo}
               alt="HireKit Logo"
-              className="h-14 w-36 rounded-2xl hover:scale-105 transition-all ease-in"
+              className="h-12 w-40 rounded-2xl hover:scale-105 transition-all ease-in"
             />
           </Link>
 

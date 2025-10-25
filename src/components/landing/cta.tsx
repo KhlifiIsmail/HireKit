@@ -66,15 +66,6 @@ export function CTA() {
                   <ArrowRight className="ml-2 h-5 w-5 mt-1" />
                 </Link>
               </Button>
-
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm px-8 py-4 h-auto text-lg"
-                asChild
-              >
-                <Link href="/#demo">Watch Demo</Link>
-              </Button>
             </div>
 
             {/* Trust Indicators */}

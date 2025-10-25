@@ -76,15 +76,6 @@ export function Hero() {
                 />
               </Link>
             </Button>
-
-            <Button
-              size="lg"
-              variant="outline"
-              className="text-lg px-8 py-4 h-auto bg-white/80 backdrop-blur-sm"
-              asChild
-            >
-              <Link href="/#demo">Watch Demo</Link>
-            </Button>
           </div>
 
           {/* Quick Features */}

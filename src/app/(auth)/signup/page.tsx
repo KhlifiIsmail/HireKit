@@ -68,7 +68,7 @@ export default function SignUpPage() {
         <div className="mx-auto w-full max-w-sm lg:w-96">
           {/* Logo */}
           <Link href="/" className="flex items-center mb-8  justify-center">
-            <Image src={logo} alt="HireKit" className="h-14 w-36 rounded-2xl" />
+            <Image src={logo} alt="HireKit" className="h-12 w-40 rounded-2xl" />
           </Link>
 
           {/* Header */}

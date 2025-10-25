@@ -35,14 +35,18 @@ export function Footer() {
   ];
 
   const socialLinks = [
-    { icon: Twitter, href: "https://twitter.com/hirekit", label: "Twitter" },
-    { icon: Github, href: "https://github.com/hirekit", label: "GitHub" },
+    { icon: Twitter, href: "#", label: "Twitter" },
+    {
+      icon: Github,
+      href: "https://github.com/KhlifiIsmail/HireKit",
+      label: "GitHub",
+    },
     {
       icon: Linkedin,
       href: "https://linkedin.com/company/hirekit",
       label: "LinkedIn",
     },
-    { icon: Mail, href: "mailto:hello@hirekit.ai", label: "Email" },
+    { icon: Mail, href: "mailto:ismail.khliffi@gmail.com", label: "Email" },
   ];
 
   return (
@@ -51,11 +55,11 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center space-x-2 group">
+            <Link href="/" className="flex items-center space-x-2 group mb-2">
               <Image
                 src={logo}
                 alt=""
-                className="h-14 w-36 rounded-2xl hover:scale-105 transition-all ease-in"
+                className="h-12 w-40 rounded-2xl hover:scale-105 transition-all ease-in"
               />
             </Link>
 

@@ -270,30 +270,33 @@ export default function DashboardPage() {
             </div>
           </Link>
 
-          <div className="relative group cursor-pointer h-full">
-            <div className="absolute inset-0 bg-slate-700/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity" />
-            <Card className="relative bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700/50 hover:border-slate-600 transition-all h-full">
-              <CardContent className="p-8">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">
-                      Get More Credits
-                    </h3>
-                    <p className="text-slate-400 mb-4">
-                      Need more analyses? Upgrade your plan for unlimited access
-                    </p>
-                    <div className="flex items-center gap-2 text-slate-500 text-sm">
-                      <Zap className="w-4 h-4" />
-                      <span>Premium plans available</span>
+          <Link href="/pricing">
+            <div className="relative group cursor-pointer h-full">
+              <div className="absolute inset-0 bg-slate-700/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity" />
+              <Card className="relative bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700/50 hover:border-slate-600 transition-all h-full">
+                <CardContent className="p-8">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-2">
+                        Get More Credits
+                      </h3>
+                      <p className="text-slate-400 mb-4">
+                        Contact our team for additional credits or check out
+                        upcoming premium plans
+                      </p>
+                      <div className="flex items-center gap-2 text-slate-500 text-sm">
+                        <Zap className="w-4 h-4" />
+                        <span>Payment system coming soon</span>
+                      </div>
+                    </div>
+                    <div className="p-4 bg-slate-700/30 rounded-xl group-hover:scale-110 transition-transform">
+                      <Sparkles className="w-8 h-8 text-slate-400" />
                     </div>
                   </div>
-                  <div className="p-4 bg-slate-700/30 rounded-xl group-hover:scale-110 transition-transform">
-                    <Sparkles className="w-8 h-8 text-slate-400" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </div>
+          </Link>
         </div>
 
         {/* Recent Analyses */}
