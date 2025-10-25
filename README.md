@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![HireKit Logo](public/logo.svg)
+![HireKit Logo](public/logo.png)
 
 **AI-Powered Resume Optimization | Beat the ATS | Land Your Dream Job**
 
