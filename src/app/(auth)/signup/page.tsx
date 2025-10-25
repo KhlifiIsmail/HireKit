@@ -3,10 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase/client";
-import { UserPlus, Mail, Lock, User, Sparkles, Check } from "lucide-react";
+import {
+  UserPlus,
+  Mail,
+  Lock,
+  User,
+  ArrowLeft,
+  Zap,
+  Check,
+} from "lucide-react";
+import logo from "public/logo.png";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -21,7 +31,6 @@ export default function SignUpPage() {
     setError("");
     setLoading(true);
 
-    // Password validation
     if (password.length < 6) {
       setError("Password must be at least 6 characters");
       setLoading(false);
@@ -42,7 +51,6 @@ export default function SignUpPage() {
       if (error) throw error;
 
       if (data.user) {
-        // Redirect to dashboard
         router.push("/dashboard");
         router.refresh();
       }
@@ -54,118 +62,119 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="p-3 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20">
-              <Sparkles className="w-8 h-8 text-purple-300" />
+    <div className="min-h-screen flex ">
+      {/* Left Side - Form */}
+      <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-20 xl:px-24 bg-white dark:bg-gray-950">
+        <div className="mx-auto w-full max-w-sm lg:w-96">
+          {/* Logo */}
+          <Link href="/" className="flex items-center mb-8  justify-center">
+            <Image src={logo} alt="HireKit" className="h-14 w-36 rounded-2xl" />
+          </Link>
+
+          {/* Header */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Create your account
+            </h2>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              Get started with 10 free resume analyses
+            </p>
+          </div>
+
+          {/* Benefits */}
+          <div className="mb-6 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20 rounded-lg p-4">
+            <div className="space-y-2">
+              {[
+                "10 free resume analyses",
+                "AI-powered optimization",
+                "ATS compatibility check",
+                "Export in multiple formats",
+              ].map((benefit, i) => (
+                <div
+                  key={i}
+                  className="flex items-center text-sm text-gray-700 dark:text-gray-300"
+                >
+                  <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+                  {benefit}
+                </div>
+              ))}
             </div>
           </div>
-          <h2 className="text-4xl font-extrabold text-white mb-2">
-            Create Your Account
-          </h2>
-          <p className="text-purple-200">
-            Get 10 free resume analyses to start
-          </p>
-        </div>
 
-        {/* Benefits */}
-        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6">
-          <div className="space-y-3">
-            {[
-              "10 free resume analyses",
-              "AI-powered optimization",
-              "ATS compatibility check",
-              "Export in multiple formats",
-            ].map((benefit, i) => (
-              <div
-                key={i}
-                className="flex items-center text-sm text-purple-200"
-              >
-                <Check className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
-                {benefit}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Form */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
-          <form onSubmit={handleSignUp} className="space-y-6">
+          {/* Form */}
+          <form onSubmit={handleSignUp} className="space-y-5">
             {error && (
-              <div className="bg-red-500/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl text-sm">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
 
-            {/* Full Name Input */}
+            {/* Full Name */}
             <div>
               <label
                 htmlFor="fullName"
-                className="block text-sm font-medium text-purple-200 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Full Name
+                Full name
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
                   id="fullName"
                   type="text"
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-purple-300/50"
+                  className="pl-11"
                   placeholder="John Doe"
                 />
               </div>
             </div>
 
-            {/* Email Input */}
+            {/* Email */}
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-purple-200 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Email Address
+                Email address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
                   id="email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-purple-300/50"
+                  className="pl-11"
                   placeholder="you@example.com"
                 />
               </div>
             </div>
 
-            {/* Password Input */}
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-purple-200 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
                   id="password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-purple-300/50"
+                  className="pl-11"
                   placeholder="••••••••"
                   minLength={6}
                 />
               </div>
-              <p className="mt-2 text-xs text-purple-300/70">
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Must be at least 6 characters
               </p>
             </div>
@@ -174,7 +183,7 @@ export default function SignUpPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
             >
               {loading ? (
                 <>
@@ -184,46 +193,51 @@ export default function SignUpPage() {
               ) : (
                 <>
                   <UserPlus className="w-5 h-5 mr-2" />
-                  Create Account
+                  Create account
                 </>
               )}
             </Button>
           </form>
 
           {/* Sign In Link */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-purple-200">
-              Already have an account?{" "}
-              <Link
-                href="/signin"
-                className="font-semibold text-purple-300 hover:text-purple-200 transition-colors"
-              >
-                Sign in
-              </Link>
-            </p>
+          <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+            Already have an account?{" "}
+            <Link
+              href="/signin"
+              className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400"
+            >
+              Sign in
+            </Link>
+          </p>
+
+          {/* Terms */}
+          <p className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
+            By signing up, you agree to our{" "}
+            <Link
+              href="/terms"
+              className="underline hover:text-gray-700 dark:hover:text-gray-300"
+            >
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/privacy"
+              className="underline hover:text-gray-700 dark:hover:text-gray-300"
+            >
+              Privacy Policy
+            </Link>
+          </p>
+
+          {/* Back to Home */}
+          <div className="mt-6">
+            <Link
+              href="/"
+              className="flex items-center justify-center text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to home
+            </Link>
           </div>
-        </div>
-
-        {/* Terms */}
-        <p className="text-center text-xs text-purple-300/70">
-          By signing up, you agree to our{" "}
-          <Link href="/terms" className="underline hover:text-purple-200">
-            Terms of Service
-          </Link>{" "}
-          and{" "}
-          <Link href="/privacy" className="underline hover:text-purple-200">
-            Privacy Policy
-          </Link>
-        </p>
-
-        {/* Back to Home */}
-        <div className="text-center">
-          <Link
-            href="/"
-            className="text-sm text-purple-300 hover:text-purple-200 transition-colors"
-          >
-            ← Back to home
-          </Link>
         </div>
       </div>
     </div>
