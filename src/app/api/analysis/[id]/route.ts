@@ -15,7 +15,7 @@ export async function GET(
       );
     }
 
-    const supabase = createServerSupabaseClient();
+    const supabase = await createServerSupabaseClient();
 
     const { data: analysis, error } = await supabase
       .from("analyses")
@@ -58,7 +58,7 @@ export async function DELETE(
       );
     }
 
-    const supabase = createServerSupabaseClient();
+    const supabase = await createServerSupabaseClient();
 
     const { error } = await supabase.from("analyses").delete().eq("id", id);
 

@@ -64,8 +64,12 @@ export default function AnalyzePage() {
       // Save to sessionStorage for anonymous users
       sessionStorage.setItem("analysisResult", JSON.stringify(analyzeResult));
 
-      // Redirect to results page
-      router.push("/results/anonymous");
+      // Redirect to results page with real DB ID
+      if (analyzeResult.id) {
+        router.push(`/results/${analyzeResult.id}`);
+      } else {
+        router.push("/results/anonymous");
+      }
     } catch (err) {
       console.error("Analysis error:", err);
       setError(err instanceof Error ? err.message : "Failed to analyze resume");

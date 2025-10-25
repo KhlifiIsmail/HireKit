@@ -24,12 +24,47 @@ export default function ResultsPage() {
   useEffect(() => {
     const loadAnalysis = async () => {
       try {
+        const id = params.id as string;
+
+        // Try to load from database first
+        if (id && id !== "anonymous") {
+          const response = await fetch(`/api/analysis/${id}`);
+
+          if (response.ok) {
+            const data = await response.json();
+
+            // Transform snake_case DB fields to camelCase
+            const transformedAnalysis: AnalysisResult = {
+              id: data.analysis.id,
+              userId: data.analysis.user_id,
+              resumeText: data.analysis.resume_text,
+              jobDescription: data.analysis.job_description,
+              overallScore: data.analysis.overall_score || 0,
+              atsScore: data.analysis.ats_score || 0,
+              keywordScore: data.analysis.keyword_score || 0,
+              formattingScore: data.analysis.formatting_score || 0,
+              missingKeywords: data.analysis.missing_keywords || [],
+              matchedKeywords: data.analysis.matched_keywords || [],
+              suggestions: data.analysis.suggestions || [],
+              atsIssues: data.analysis.ats_issues || [],
+              improvedText:
+                data.analysis.improved_text || data.analysis.resume_text,
+              createdAt: data.analysis.created_at,
+            };
+
+            setAnalysis(transformedAnalysis);
+            setLoading(false);
+            return;
+          }
+        }
+
+        // Fallback to sessionStorage for anonymous or if DB fetch fails
         const stored = sessionStorage.getItem("analysisResult");
         if (stored) {
           const data = JSON.parse(stored);
           setAnalysis(data);
         } else {
-          setError("Analysis results not found.");
+          setError("Analysis results not found. Please run a new analysis.");
         }
       } catch (err) {
         console.error("Error loading analysis:", err);
@@ -40,7 +75,7 @@ export default function ResultsPage() {
     };
 
     loadAnalysis();
-  }, []);
+  }, [params]);
 
   if (loading) {
     return (
