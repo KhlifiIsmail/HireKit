@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu, X, Zap, User, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import logo from "public/logo.png";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,12 +23,11 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl text-white group-hover:scale-105 transition-transform duration-200">
-              <Zap className="h-5 w-5" />
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              HireKit
-            </span>
+            <Image
+              src={logo}
+              alt=""
+              className="h-14 w-36 rounded-2xl hover:scale-105 transition-all ease-in"
+            />
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">

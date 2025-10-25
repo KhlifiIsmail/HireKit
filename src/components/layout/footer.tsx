@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Zap, Twitter, Github, Linkedin, Mail } from "lucide-react";
+import Image from "next/image";
+import logo from "public/logo.png";
 
 export function Footer() {
   const footerSections = [
@@ -49,13 +51,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center space-x-2 group mb-4">
-              <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl text-white group-hover:scale-105 transition-transform duration-200">
-                <Zap className="h-5 w-5" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                HireKit
-              </span>
+            <Link href="/" className="flex items-center space-x-2 group">
+              <Image
+                src={logo}
+                alt=""
+                className="h-14 w-36 rounded-2xl hover:scale-105 transition-all ease-in"
+              />
             </Link>
 
             <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md">
