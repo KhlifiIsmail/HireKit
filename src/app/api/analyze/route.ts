@@ -54,23 +54,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("Analyzing resume with AI...");
+    console.log("🚀 Starting resume analysis...");
     const analysis = await analyzeResume({
       resumeText,
       jobDescription: jobDescription || undefined,
     });
 
+    console.log("✅ Analysis complete:", {
+      overallScore: analysis.overallScore,
+      keywordScore: analysis.keywordScore,
+      matchedKeywords: analysis.matchedKeywords.length,
+      missingKeywords: analysis.missingKeywords.length,
+    });
+
     // Deduct 1 credit
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ credits: profile.credits - 1 })
+      .update({
+        credits: profile.credits - 1,
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", user.id);
 
     if (updateError) {
       console.error("Failed to update credits:", updateError);
     }
 
-    // Save analysis to database
+    // Save analysis to database - INCLUDE BOTH KEYWORD ARRAYS
     const { data: savedAnalysis, error: saveError } = await supabase
       .from("analyses")
       .insert({
@@ -80,8 +90,15 @@ export async function POST(request: NextRequest) {
         overall_score: analysis.overallScore,
         ats_score: analysis.atsScore,
         keyword_score: analysis.keywordScore,
+        formatting_score: analysis.formattingScore,
         suggestions: analysis.suggestions,
+        missing_keywords: analysis.missingKeywords, // ✅ Save missing
+        matched_keywords: analysis.matchedKeywords, // ✅ Save matched
+        ats_issues: analysis.atsIssues,
         improved_text: analysis.improvedText,
+        status: "completed",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single();
@@ -94,11 +111,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("Analysis complete and saved:", {
-      id: savedAnalysis.id,
-      overallScore: analysis.overallScore,
-      creditsRemaining: profile.credits - 1,
-    });
+    console.log("💾 Saved to database with ID:", savedAnalysis.id);
 
     return NextResponse.json({
       ...analysis,
@@ -106,7 +119,7 @@ export async function POST(request: NextRequest) {
       creditsRemaining: profile.credits - 1,
     });
   } catch (error) {
-    console.error("Analysis error:", error);
+    console.error("❌ Analysis error:", error);
 
     const errorMessage =
       error instanceof Error ? error.message : "Failed to analyze resume";
